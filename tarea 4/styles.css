@@ -1,0 +1,44 @@
+/* ===== Encabezado de página ===== */
+.page-header {
+    background-color: #1a1a2e;
+    color: #e0e0e0;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    font-size: 1.40rem;
+}
+
+main, .container {
+    flex: 1;
+}
+
+.page-header h1,
+.page-header p {
+    color: #e0e0e0;
+    font-size: 2.5rem;
+}
+
+/* ===== Títulos de sección ===== */
+.section-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    border-left: 0.25% solid #4a90d9;
+    padding-left: 1%;
+    margin-bottom: 1.5%;
+}
+
+/* ===== Subtítulos del sidebar ===== */
+.sidebar-subtitle {
+    color: #4a90d9;
+    font-weight: 600;
+}
+
+/* ===== Imagen de perfil ===== */
+.profile-img {
+    max-width: 30%;
+    border: 0.2% solid #4a90d9;
+}

@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juan José Lara Castillo - Página Personal</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <!-- Encabezado -->
+    <header class="page-header text-center py-5">
+        <div class="container">
+            <h1 class="display-4 fw-bold">Juan José Lara Castillo</h1>
+            <p class="lead mb-0">Estudiante de Informática Empresarial</p>
+        </div>
+    </header>
+
+    <!-- Navegación -->
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark sticky-top">
+        <div class="container">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navMenu">
+                <ul class="navbar-nav gap-1">
+                    <li class="nav-item"><a class="nav-link" href="#sobre-mi">Sobre mí</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#habilidades">Habilidades</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#hobbies">Hobbies</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#video">Video</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#enlaces">Enlaces</a></li>
+                    <li class="nav-item"><a class="nav-link" href="contacto.html">Contacto</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenido principal con Grid: columna principal + sidebar -->
+    <div class="container my-5">
+        <div class="row g-4">
+
+            <!-- Columna principal -->
+            <div class="col-lg-8">
+
+                <!-- Sección Sobre mí (Bootstrap Card) -->
+                <section id="sobre-mi" class="mb-4">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h2 class="card-title section-title">🙋‍♂️ Sobre mí</h2>
+                            <div class="d-flex flex-column flex-sm-row align-items-start gap-4">
+                                <img src="images/mondongo.img" alt="Foto de Juan José Lara Castillo"
+                                    class="img-fluid rounded profile-img">
+                                <p class="card-text">
+                                    Hola, mi nombre es <strong>Juan José Lara Castillo</strong>, tengo
+                                    <strong>20 años</strong> y estudio <strong>Informática Empresarial</strong>.
+                                    Me apasionan los videojuegos y la tecnología. Disfruto programar, dibujar
+                                    y aprender cosas nuevas relacionadas con el mundo digital.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Sección Video -->
+                <section id="video" class="mb-4">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h2 class="card-title section-title">🎬 Video destacado</h2>
+                            <p class="card-text">
+                                <strong>Captain Tsubasa 2: World Fighters</strong> es el juego que más espero
+                                este 2026 y justamente ayer publicaron un nuevo trailer —
+                                <a href="#enlaces">ver enlaces</a>.
+                            </p>
+                            <div class="ratio ratio-16x9 mt-3">
+                                <iframe src="https://www.youtube.com/embed/G4QdMs4l6ZY?si=fdQDJzUvhZZzwpFw"
+                                    title="YouTube video player"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                    referrerpolicy="strict-origin-when-cross-origin"
+                                    allowfullscreen></iframe>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Sección Habilidades con tabla Bootstrap -->
+                <section id="habilidades" class="mb-4">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h2 class="card-title section-title">📊 Mis habilidades</h2>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-striped table-hover align-middle">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th>Habilidad</th>
+                                            <th>Nivel</th>
+                                            <th>Experiencia</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Programación</td>
+                                            <td>Intermedio</td>
+                                            <td>4 años</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Dibujo</td>
+                                            <td>Básico</td>
+                                            <td>2 años</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Planificación</td>
+                                            <td>Básico</td>
+                                            <td>1 año</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+
+                <!-- Sección Hobbies -->
+                <section id="hobbies" class="mb-4">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h2 class="card-title section-title">📋 Mis listas</h2>
+
+                            <h5 class="mt-3 sidebar-subtitle">Hobbies</h5>
+                            <ul class="list-group list-group-flush mb-3">
+                                <li class="list-group-item">🎮 Jugar videojuegos</li>
+                                <li class="list-group-item">💻 Programar</li>
+                                <li class="list-group-item">✏️ Dibujar</li>
+                                <li class="list-group-item">🧱 Armar Legos</li>
+                            </ul>
+
+                            <h5 class="sidebar-subtitle">Comidas favoritas</h5>
+                            <ol class="list-group list-group-numbered">
+                                <li class="list-group-item">Pescado</li>
+                                <li class="list-group-item">Pizza</li>
+                                <li class="list-group-item">Pollo</li>
+                            </ol>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Sección Enlaces -->
+                <section id="enlaces">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h2 class="card-title section-title">🔗 Enlaces</h2>
+
+                            <a href="https://store.steampowered.com/app/2172910/CAPTAIN_TSUBASA_2_WORLD_FIGHTERS/"
+                                target="_blank"
+                                class="btn btn-primary w-100 mb-3">
+                                Captain Tsubasa 2 en Steam
+                            </a>
+                            <p class="text-muted small">
+                                Página oficial en Steam. Aún sin fecha confirmada, pero disponible para
+                                agregar a tu lista de deseados. ¡El juego que más espero este 2026!
+                            </p>
+
+                            <a href="#sobre-mi" class="btn btn-outline-secondary w-100 mt-2">
+                                ↑ Volver a Sobre mí
+                            </a>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-center py-3 bg-dark text-light mt-4">
+        <p class="mb-0">&copy; 2026 Juan José Lara Castillo · Informática Empresarial</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
