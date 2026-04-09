@@ -1,9 +1,4 @@
-/* ===== Encabezado de página ===== */
-.page-header {
-    background-color: #1a1a2e;
-    color: #e0e0e0;
-}
-
+/* ===== Layout base ===== */
 body {
     display: flex;
     flex-direction: column;
@@ -13,6 +8,12 @@ body {
 
 main, .container {
     flex: 1;
+}
+
+/* ===== Encabezado de página ===== */
+.page-header {
+    background-color: #1a1a2e;
+    color: #e0e0e0;
 }
 
 .page-header h1,
