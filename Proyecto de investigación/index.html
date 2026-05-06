@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Gestión de Cursos</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .container-main {
+            max-width: 1000px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 15px;
+        }
+
+        .page-header {
+            text-align: center;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .page-header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-tabs .nav-link {
+            color: white;
+            opacity: 0.8;
+            font-weight: 600;
+            border: none;
+            border-bottom: 3px solid transparent;
+        }
+
+        .nav-tabs .nav-link:hover {
+            border-color: rgba(255, 255, 255, 0.5);
+            opacity: 1;
+        }
+
+        .nav-tabs .nav-link.active {
+            color: #667eea;
+            background: white;
+            border-radius: 10px 10px 0 0;
+            opacity: 1;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .tab-content {
+            background: transparent;
+        }
+
+        .tab-pane {
+            padding-top: 20px;
+        }
+
+        .card {
+            border: none;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            margin-bottom: 30px;
+        }
+
+        .card-header {
+            border-radius: 12px 12px 0 0 !important;
+            font-weight: 600;
+            padding: 20px;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .header-create {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+
+        .header-search {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .header-update {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        }
+
+        .header-delete {
+            background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
+        }
+
+        .card-body {
+            padding: 25px;
+            background: white;
+            border-radius: 0 0 12px 12px;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        .form-control,
+        .form-select {
+            border-radius: 8px;
+            border: 2px solid #e9ecef;
+            padding: 10px 15px;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+
+        .btn-custom {
+            padding: 10px 30px;
+            font-weight: 600;
+            border-radius: 8px;
+            border: none;
+        }
+
+        .btn-success.btn-custom {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+        }
+
+        .btn-primary.btn-custom {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+
+        .required {
+            color: #dc3545;
+            font-weight: bold;
+        }
+
+        .text-muted-small {
+            font-size: 0.85rem;
+            color: #6c757d;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container container-main">
+        <div class="page-header">
+            <h1><i class="fas fa-graduation-cap"></i> Sistema de Gestión de Academia</h1>
+            <p>Proyecto de Investigación Personal - Consumo de APIs</p>
+        </div>
+
+        <!-- Pestañas de Navegación -->
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="cursos-tab" data-bs-toggle="tab" data-bs-target="#cursos"
+                    type="button" role="tab"><i class="fas fa-book"></i> Cursos</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="grupos-tab" data-bs-toggle="tab" data-bs-target="#grupos" type="button"
+                    role="tab"><i class="fas fa-users"></i> Grupos</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="usuarios-tab" data-bs-toggle="tab" data-bs-target="#usuarios" type="button"
+                    role="tab"><i class="fas fa-user"></i> Usuarios</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="facturas-tab" data-bs-toggle="tab" data-bs-target="#facturas" type="button"
+                    role="tab"><i class="fas fa-file-invoice"></i> Facturas</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="detalle-tab" data-bs-toggle="tab" data-bs-target="#detalle" type="button"
+                    role="tab"><i class="fas fa-list-alt"></i> Detalle</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="pagos-tab" data-bs-toggle="tab" data-bs-target="#pagos" type="button"
+                    role="tab"><i class="fas fa-credit-card"></i> Pagos</button>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="myTabContent">
+            <!-- PESTAÑA CURSOS -->
+            <div class="tab-pane fade show active" id="cursos" role="tabpanel">
+                <!-- Crear -->
+                <div class="card">
+                    <div class="card-header header-create"><i class="fas fa-plus"></i> Crear Curso</div>
+                    <div class="card-body">
+                        <form method="POST" action="https://paginas-web-cr.com/Api/form/crearcurso.php">
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Nombre <span class="required">*</span></label>
+                                    <input type="text" class="form-control" name="nombre" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Usuario <span class="required">*</span></label>
+                                    <input type="text" class="form-control" name="usuario" required>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Descripción <span class="required">*</span></label>
+                                <textarea class="form-control" name="descripcion" required></textarea>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Tiempo (horas) <span class="required">*</span></label>
+                                    <input type="number" class="form-control" name="tiempo" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">URL Retorno</label>
+                                    <input type="url" class="form-control" name="return_url">
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-success btn-custom">Guardar</button>
+                        </form>
+                    </div>
+                </div>
+                <!-- Consultar -->
+                <div class="card">
+                    <div class="card-header header-search"><i class="fas fa-search"></i> Consultar Cursos</div>
+                    <div class="card-body">
+                        <form method="GET" action="https://paginas-web-cr.com/Api/form/consultarcurso.php">
+                            <div class="mb-3">
+                                <label class="form-label">Nombre (usar * para todos)</label>
+                                <input type="text" class="form-control" name="nombre" placeholder="*">
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-custom">Consultar</button>
+                        </form>
+                    </div>
+                </div>
+                <!-- Actualizar -->
+                <div class="card">
+                    <div class="card-header header-update"><i class="fas fa-edit"></i> Actualizar Curso</div>
+                    <div class="card-body">
+                        <form method="POST" action="https://paginas-web-cr.com/Api/form/actualizarcurso.php">
+                            <div class="mb-3">
+                                <label class="form-label">ID Curso <span class="required">*</span></label>
+                                <input type="text" class="form-control" name="id" required>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Nombre</label>
+                                    <input type="text" class="form-control" name="nombre">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Usuario</label>
+                                    <input type="text" class="form-control" name="usuario">
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Descripción</label>
+                                <textarea class="form-control" name="descripcion"></textarea>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Tiempo</label>
+                                    <input type="number" class="form-control" name="tiempo">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">URL Retorno</label>
+                                    <input type="url" class="form-control" name="return_url">
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-custom header-update text-white">Actualizar</button>
+                        </form>
+                    </div>
+                </div>
+                <!-- Eliminar -->
+                <div class="card">
+                    <div class="card-header header-delete"><i class="fas fa-trash"></i> Eliminar Curso</div>
+                    <div class="card-body">
+                        <form method="POST" action="https://paginas-web-cr.com/Api/form/eliminarcurso.php">
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">ID Curso <span class="required">*</span></label>
+                                    <input type="text" class="form-control" name="id" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">URL Retorno</label>
+                                    <input type="url" class="form-control" name="return_url">
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-custom header-delete text-white">Eliminar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PESTAÑA GRUPOS -->
+            <div class="tab-pane fade" id="grupos" role="tabpanel">
+                <div class="card">
+                    <div class="card-header header-create"><i class="fas fa-plus"></i> Crear Grupo</div>
+                    <div class="card-body">
+                        <form method="POST" action="https://paginas-web-cr.com/Api/form/creargrupo.php">
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Nombre <span class="required">*</span></label>
+                                    <input type="text" class="form-control" name="nombre" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">URL Retorno</label>
+                                    <input type="url" class="form-control" name="return_url">
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-success btn-custom">Guardar</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header header-search"><i class="fas fa-search"></i> Consultar Grupos</div>
+                    <div class="card-body">
+                        <form method="GET" action="https://paginas-web-cr.com/Api/form/consultargrupo.php">
+                            <div class="mb-3">
+                                <label class="form-label">Nombre (usar * para todos)</label>
+                                <input type="text" class="form-control" name="nombre" placeholder="*">
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-custom">Consultar</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header header-update"><i class="fas fa-edit"></i> Actualizar Grupo</div>
+                    <div class="card-body">
+                        <form method="POST" action="https://paginas-web-cr.com/Api/form/actualizargrupo.php">
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    <label class="form-label">ID <span class="required">*</span></label>
+                                    <input type="text" class="form-control" name="id" required>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Nombre</label>
+                                    <input type="text" class="form-control" name="nombre">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">URL Retorno</label>
+                                    <input type="url" class="form-control" name="return_url">
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-custom header-update text-white">Actualizar</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header header-delete"><i class="fas fa-trash"></i> Eliminar Grupo</div>
+                    <div class="card-body">
+                        <form method="POST" action="https://paginas-web-cr.com/Api/form/eliminargrupo.php">
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">ID <span class="required">*</span></label>
+                                    <input type="text" class="form-control" name="id" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">URL Retorno</label>
+                                    <input type="url" class="form-control" name="return_url">
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-custom header-delete text-white">Eliminar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PESTAÑA USUARIOS -->
+            <div class="tab-pane fade" id="usuarios" role="tabpanel">
+                <div class="card">
+                    <div class="card-header header-create"><i class="fas fa-plus"></i> Crear Usuario</div>
+                    <div class="card-body">
+                        <form method="POST" action="https://paginas-web-cr.com/Api/form/crearusuario.php">
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    <label class="form-label">Nombre <span class="required">*</span></label>
+                                    <input type="text" class="form-control" name="name" required>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Email <span class="required">*</span></label>
+                                    <input type="email" class="form-control" name="email" required>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Contraseña <span class="required">*</span></label>
+                                    <input type="password" class="form-control" name="password" required>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">URL Retorno</label>
+                                <input type="url" class="form-control" name="return_url">
+                            </div>
+                            <button type="submit" class="btn btn-success btn-custom">Guardar</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header header-search"><i class="fas fa-search"></i> Consultar Usuarios</div>
+                    <div class="card-body">
+                        <form method="GET" action="https://paginas-web-cr.com/Api/form/consultarusuario.php">
+                            <div class="mb-3">
+                                <label class="form-label">Nombre (usar * para todos)</label>
+                                <input type="text" class="form-control" name="name" placeholder="*">
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-custom">Consultar</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header header-update"><i class="fas fa-edit"></i> Actualizar Usuario</div>
+                    <div class="card-body">
+                        <form method="POST" action="https://paginas-web-cr.com/Api/form/actualizarusuario.php">
+                            <div class="row mb-3">
+                                <div class="col-md-3">
+                                    <label class="form-label">ID <span class="required">*</span></label>
+                                    <input type="text" class="form-control" name="id" required>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Nombre</label>
+                                    <input type="text" class="form-control" name="name">
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Nueva Contraseña</label>
+                                    <input type="password" class="form-control" name="password">
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">URL Retorno</label>
+                                    <input type="url" class="form-control" name="return_url">
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-custom header-update text-white">Actualizar</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header header-delete"><i class="fas fa-trash"></i> Eliminar Usuario</div>
+                    <div class="card-body">
+                        <form method="POST" action="https://paginas-web-cr.com/Api/form/eliminarusuario.php">
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">ID <span class="required">*</span></label>
+                                    <input type="text" class="form-control" name="id" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">URL Retorno</label>
+                                    <input type="url" class="form-control" name="return_url">
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-custom header-delete text-white">Eliminar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PESTAÑA FACTURAS -->
+            <div class="tab-pane fade" id="facturas" role="tabpanel">
+                <div class="card">
+                    <div class="card-header header-create"><i class="fas fa-plus"></i> Crear Factura</div>
+                    <div class="card-body">
+                        <form method="POST" action="https://paginas-web-cr.com/Api/form/crearfactura.php">
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    <label class="form-label">Cliente <span class="required">*</span></label>
+                                    <input type="text" class="form-control" name="cliente" required>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Usuario <span class="required">*</span></label>
+                                    <input type="text" class="form-control" name="usuario" required>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">URL Retorno</label>
+                                    <input type="url" class="form-control" name="return_url">
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-success btn-custom">Guardar</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header header-search"><i class="fas fa-search"></i> Consultar Facturas</div>
+                    <div class="card-body">
+                        <form method="GET" action="https://paginas-web-cr.com/Api/form/consultarfactura.php">
+                            <div class="mb-3">
+                                <label class="form-label">Cliente (usar * para todos)</label>
+                                <input type="text" class="form-control" name="cliente" placeholder="*">
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-custom">Consultar</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header header-update"><i class="fas fa-edit"></i> Actualizar Factura</div>
+                    <div class="card-body">
+                        <form method="POST" action="https://paginas-web-cr.com/Api/form/actualizarfactura.php">
+                            <div class="row mb-3">
+                                <div class="col-md-3">
+                                    <label class="form-label">ID Factura <span class="required">*</span></label>
+                                    <input type="text" class="form-control" name="id" required>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Cliente</label>
+                                    <input type="text" class="form-control" name="cliente">
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Total</label>
+                                    <input type="number" class="form-control" name="total">
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">URL Retorno</label>
+                                    <input type="url" class="form-control" name="return_url">
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-custom header-update text-white">Actualizar</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header header-delete"><i class="fas fa-trash"></i> Eliminar Factura</div>
+                    <div class="card-body">
+                        <form method="POST" action="https://paginas-web-cr.com/Api/form/eliminarfactura.php">
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">ID Factura <span class="required">*</span></label>
+                                    <input type="text" class="form-control" name="id" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">URL Retorno</label>
+                                    <input type="url" class="form-control" name="return_url">
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-custom header-delete text-white">Eliminar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PESTAÑA DETALLE FACTURA -->
+            <div class="tab-pane fade" id="detalle" role="tabpanel">
+                <div class="card">
+                    <div class="card-header header-create"><i class="fas fa-plus"></i> Crear Detalle</div>
+                    <div class="card-body">
+                        <form method="POST" action="https://paginas-web-cr.com/Api/form/crearfacturadetalle.php">
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    <label class="form-label">ID Factura <span class="required">*</span></label>
+                                    <input type="text" class="form-control" name="id_factura" required>
+                                </div>
+                                <div class="col-md-8">
+                                    <label class="form-label">Producto <span class="required">*</span></label>
+                                    <input type="text" class="form-control" name="producto" required>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Cantidad <span class="required">*</span></label>
+                                    <input type="number" class="form-control" name="cantidad" required>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Precio <span class="required">*</span></label>
+                                    <input type="number" class="form-control" name="precio" required>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Usuario <span class="required">*</span></label>
+                                    <input type="text" class="form-control" name="usuario" required>
+                                </div>
+                                <div class="col-md-12">
+                                    <label class="form-label">URL Retorno</label>
+                                    <input type="url" class="form-control" name="return_url">
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-success btn-custom">Guardar</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header header-search"><i class="fas fa-search"></i> Consultar Detalles</div>
+                    <div class="card-body">
+                        <form method="GET" action="https://paginas-web-cr.com/Api/form/consultarfacturadetalle.php">
+                            <div class="mb-3">
+                                <label class="form-label">ID Factura (usar * para todos)</label>
+                                <input type="text" class="form-control" name="id_factura" placeholder="*">
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-custom">Consultar</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header header-update"><i class="fas fa-edit"></i> Actualizar Detalle</div>
+                    <div class="card-body">
+                        <form method="POST" action="https://paginas-web-cr.com/Api/form/actualizarfacturadetalle.php">
+                            <div class="row mb-3">
+                                <div class="col-md-3">
+                                    <label class="form-label">ID Detalle <span class="required">*</span></label>
+                                    <input type="text" class="form-control" name="id" required>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Producto</label>
+                                    <input type="text" class="form-control" name="producto">
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="form-label">Cantidad</label>
+                                    <input type="number" class="form-control" name="cantidad">
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="form-label">Precio</label>
+                                    <input type="number" class="form-control" name="precio">
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="form-label">Usuario</label>
+                                    <input type="text" class="form-control" name="usuario">
+                                </div>
+                                <div class="col-md-12">
+                                    <label class="form-label">URL Retorno</label>
+                                    <input type="url" class="form-control" name="return_url">
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-custom header-update text-white">Actualizar</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header header-delete"><i class="fas fa-trash"></i> Eliminar Detalle</div>
+                    <div class="card-body">
+                        <form method="POST" action="https://paginas-web-cr.com/Api/form/eliminarfacturadetalle.php">
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">ID Detalle <span class="required">*</span></label>
+                                    <input type="text" class="form-control" name="id" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">URL Retorno</label>
+                                    <input type="url" class="form-control" name="return_url">
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-custom header-delete text-white">Eliminar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PESTAÑA PAGOS -->
+            <div class="tab-pane fade" id="pagos" role="tabpanel">
+                <div class="card">
+                    <div class="card-header header-create"><i class="fas fa-plus"></i> Crear Pago</div>
+                    <div class="card-body">
+                        <form method="POST" action="https://paginas-web-cr.com/Api/form/crearpago.php">
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">ID Factura <span class="required">*</span></label>
+                                    <input type="text" class="form-control" name="id_factura" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Monto <span class="required">*</span></label>
+                                    <input type="number" step="0.01" class="form-control" name="monto" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Método <span class="required">*</span></label>
+                                    <input type="text" class="form-control" name="metodo" required placeholder="Ej: Tarjeta">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Detalle <span class="required">*</span></label>
+                                    <input type="text" class="form-control" name="detalle" required>
+                                </div>
+                                <div class="col-md-12">
+                                    <label class="form-label">Usuario <span class="required">*</span></label>
+                                    <input type="text" class="form-control" name="usuario" required>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-success btn-custom">Guardar</button>
+                        </form>
+                    </div>
+                </div>
+                <!-- Consultar -->
+                <div class="card">
+                    <div class="card-header header-search"><i class="fas fa-search"></i> Consultar Pagos</div>
+                    <div class="card-body">
+                        <form method="GET" action="https://paginas-web-cr.com/Api/form/consultapago.php">
+                            <div class="mb-3">
+                                <label class="form-label">Nombre (usar * para todos)</label>
+                                <input type="text" class="form-control" name="nombre" placeholder="*">
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-custom">Consultar</button>
+                        </form>
+                    </div>
+                </div>
+                <!-- Actualizar -->
+                <div class="card">
+                    <div class="card-header header-update"><i class="fas fa-edit"></i> Actualizar Pago</div>
+                    <div class="card-body">
+                        <form method="POST" action="https://paginas-web-cr.com/Api/form/actualizarpago.php">
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    <label class="form-label">ID Pago <span class="required">*</span></label>
+                                    <input type="text" class="form-control" name="id" required>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Estado</label>
+                                    <input type="text" class="form-control" name="estado" placeholder="Ej: Completado">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Fecha</label>
+                                    <input type="date" class="form-control" name="fecha">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Detalle</label>
+                                    <input type="text" class="form-control" name="detalle">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Usuario</label>
+                                    <input type="text" class="form-control" name="usuario">
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-custom header-update text-white">Actualizar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts de Bootstrap para que funcionen las pestañas -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
