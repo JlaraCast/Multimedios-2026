@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Clientes</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body class="bg-light">
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand fw-bold" href="../index.html">Sistema Hotelero</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navMenu">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="hotel.html">Hoteles</a></li>
+                    <li class="nav-item"><a class="nav-link" href="sede.html">Sedes</a></li>
+                    <li class="nav-item"><a class="nav-link" href="habitacion.html">Habitaciones</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="cliente.html">Clientes</a></li>
+                    <li class="nav-item"><a class="nav-link" href="reservacion.html">Reservaciones</a></li>
+                    <li class="nav-item"><a class="nav-link" href="pago.html">Pagos</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container my-4">
+        <div id="alertaPagina"></div>
+
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2 class="h4 mb-0">Lista de Clientes</h2>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalFormulario" onclick="prepararFormularioAgregar()">
+                + Crear Cliente
+            </button>
+        </div>
+
+        <div class="card shadow-sm">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover align-middle mb-0">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>#</th>
+                                <th>Nombre</th>
+                                <th>Apellidos</th>
+                                <th>Identificación</th>
+                                <th>Correo</th>
+                                <th>Teléfono</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cuerpoTabla">
+                            <tr><td colspan="7" class="text-center py-3">Cargando...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="modalFormulario" tabindex="-1" aria-labelledby="tituloModal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="tituloModal">Crear Cliente</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="formulario" novalidate>
+                        <input type="hidden" id="clienteId">
+
+                        <div class="mb-3">
+                            <label for="nombre" class="form-label">Nombre *</label>
+                            <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Ej: Juan">
+                        </div>
+                        <div class="mb-3">
+                            <label for="apellidos" class="form-label">Apellidos *</label>
+                            <input type="text" class="form-control" id="apellidos" name="apellidos" placeholder="Ej: Pérez Rodríguez">
+                        </div>
+                        <div class="mb-3">
+                            <label for="identificacion" class="form-label">Identificación *</label>
+                            <input type="text" class="form-control" id="identificacion" name="identificacion" placeholder="Ej: 1-1234-5678">
+                        </div>
+                        <div class="mb-3">
+                            <label for="correo" class="form-label">Correo *</label>
+                            <input type="email" class="form-control" id="correo" name="correo" placeholder="Ej: juan@example.com">
+                        </div>
+                        <div class="mb-3">
+                            <label for="telefono" class="form-label">Teléfono *</label>
+                            <input type="tel" class="form-control" id="telefono" name="telefono" placeholder="Ej: 8888-9999">
+                        </div>
+                        <div class="mb-3">
+                            <label for="usuario" class="form-label">Usuario *</label>
+                            <input type="text" class="form-control" id="usuario" name="usuario" placeholder="Ej: Admin">
+                        </div>
+
+                        <div id="alertaFormulario"></div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnCancelarModal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary" id="btnSubmit" form="formulario">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="module" src="../controllers/clienteController.js"></script>
+</body>
+</html>

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Sedes</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body class="bg-light">
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand fw-bold" href="../index.html">Sistema Hotelero</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navMenu">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="hotel.html">Hoteles</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="sede.html">Sedes</a></li>
+                    <li class="nav-item"><a class="nav-link" href="habitacion.html">Habitaciones</a></li>
+                    <li class="nav-item"><a class="nav-link" href="cliente.html">Clientes</a></li>
+                    <li class="nav-item"><a class="nav-link" href="reservacion.html">Reservaciones</a></li>
+                    <li class="nav-item"><a class="nav-link" href="pago.html">Pagos</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container my-4">
+        <div id="alertaPagina"></div>
+
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2 class="h4 mb-0">Lista de Sedes</h2>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalFormulario" onclick="prepararFormularioAgregar()">
+                + Crear Sede
+            </button>
+        </div>
+
+        <div class="card shadow-sm">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover align-middle mb-0">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>#</th>
+                                <th>Nombre</th>
+                                <th>Provincia</th>
+                                <th>Ciudad</th>
+                                <th>Teléfono</th>
+                                <th>ID Hotel</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cuerpoTabla">
+                            <tr><td colspan="7" class="text-center py-3">Cargando...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="modalFormulario" tabindex="-1" aria-labelledby="tituloModal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="tituloModal">Crear Sede</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="formulario" novalidate>
+                        <input type="hidden" id="sedeId">
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="id_hotel" class="form-label">ID del Hotel *</label>
+                                <input type="text" class="form-control" id="id_hotel" name="id_hotel" placeholder="Ej: 1">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="nombre" class="form-label">Nombre de la Sede *</label>
+                                <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Ej: Sede Central">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="pais" class="form-label">País *</label>
+                                <input type="text" class="form-control" id="pais" name="pais" placeholder="Ej: Costa Rica">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="provincia" class="form-label">Provincia *</label>
+                                <input type="text" class="form-control" id="provincia" name="provincia" placeholder="Ej: San José">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="ciudad" class="form-label">Ciudad *</label>
+                                <input type="text" class="form-control" id="ciudad" name="ciudad" placeholder="Ej: Escazú">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="telefono" class="form-label">Teléfono *</label>
+                                <input type="tel" class="form-control" id="telefono" name="telefono" placeholder="Ej: 2222-3333">
+                            </div>
+                            <div class="col-md-12 mb-3">
+                                <label for="direccion" class="form-label">Dirección *</label>
+                                <input type="text" class="form-control" id="direccion" name="direccion" placeholder="Ej: 200m norte del parque">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="correo" class="form-label">Correo</label>
+                                <input type="email" class="form-control" id="correo" name="correo" placeholder="Ej: sede@hotel.com">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="cantidad_habitaciones" class="form-label">Cantidad Habitaciones</label>
+                                <input type="number" class="form-control" id="cantidad_habitaciones" name="cantidad_habitaciones" placeholder="Ej: 50" min="0">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="usuario" class="form-label">Usuario *</label>
+                                <input type="text" class="form-control" id="usuario" name="usuario" placeholder="Ej: Admin">
+                            </div>
+                        </div>
+
+                        <div id="alertaFormulario"></div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnCancelarModal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary" id="btnSubmit" form="formulario">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="module" src="../controllers/sedeController.js"></script>
+</body>
+</html>

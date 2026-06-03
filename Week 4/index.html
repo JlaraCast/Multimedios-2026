@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="es" data-bs-theme="light">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Sistema Integrado - API REST</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+        <style>
+            .card-module {
+                transition: transform 0.3s, box-shadow 0.3s;
+                border: none;
+                border-radius: 10px;
+            }
+            .card-module:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            }
+            .card-module .btn {
+                border-radius: 25px;
+                padding: 10px 30px;
+            }
+            .badge-simple {
+                font-size: 0.8rem;
+                padding: 5px 10px;
+                border-radius: 20px;
+            }
+        </style>
+    </head>
+    <body class="bg-light">
+        <header class="bg-primary text-white py-5">
+            <div class="container">
+                <h1 class="mb-2">🚀 Sistema de Gestión Integrado</h1>
+                <p class="lead mb-0">API REST con Arquitectura MVC (Bootstrap 5)</p>
+            </div>
+        </header>
+
+        <main class="container my-5">
+            <!-- RECURSOS SIMPLES -->
+            <div class="row mb-5">
+                <div class="col-12">
+                    <h2 class="mb-4">
+                        <span class="badge bg-success badge-simple">SIMPLES</span> Recursos Básicos
+                    </h2>
+                </div>
+            </div>
+
+            <div class="row g-4 mb-5">
+                <div class="col-md-6 col-lg-4">
+                    <div class="card card-module shadow-sm h-100">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">📍 Provincias</h5>
+                            <p class="card-text text-muted">Gestiona provincias (id, nombre)</p>
+                            <span class="badge bg-info mb-3">Fields: 2</span>
+                            <a href="./view/provincia.html" class="btn btn-primary">Gestionar</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-4">
+                    <div class="card card-module shadow-sm h-100">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">👥 Usuarios</h5>
+                            <p class="card-text text-muted">Gestiona usuarios (id, name, email, password)</p>
+                            <span class="badge bg-info mb-3">Fields: 4</span>
+                            <a href="./view/usuario.html" class="btn btn-primary">Gestionar</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-4">
+                    <div class="card card-module shadow-sm h-100">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">👨‍🎓 Grupos</h5>
+                            <p class="card-text text-muted">Gestiona grupos (id, nombre)</p>
+                            <span class="badge bg-info mb-3">Fields: 2</span>
+                            <a href="./view/grupo.html" class="btn btn-primary">Gestionar</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RECURSOS COMPLEJOS -->
+            <div class="row mb-5">
+                <div class="col-12">
+                    <h2 class="mb-4">
+                        <span class="badge bg-warning badge-simple">COMPLEJOS</span> Recursos Extensos
+                    </h2>
+                </div>
+            </div>
+
+            <div class="row g-4 mb-5">
+                <div class="col-md-6 col-lg-4">
+                    <div class="card card-module shadow-sm h-100">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">📚 Cursos</h5>
+                            <p class="card-text text-muted">Gestiona cursos (id, nombre, descripción, horas, instructor)</p>
+                            <span class="badge bg-warning mb-3">Fields: 5</span>
+                            <a href="./view/curso.html" class="btn btn-primary">Gestionar</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-4">
+                    <div class="card card-module shadow-sm h-100">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">🎓 Estudiantes</h5>
+                            <p class="card-text text-muted">Gestiona estudiantes (nombre, cédula, email, teléfono, usuario)</p>
+                            <span class="badge bg-warning mb-3">Fields: 8</span>
+                            <a href="./view/estudiante.html" class="btn btn-primary">Gestionar</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-4">
+                    <div class="card card-module shadow-sm h-100">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">👨‍🏫 Profesores</h5>
+                            <p class="card-text text-muted">Gestiona profesores (nombre, cédula, email, teléfono, usuario)</p>
+                            <span class="badge bg-warning mb-3">Fields: 8</span>
+                            <a href="./view/profesor.html" class="btn btn-primary">Gestionar</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- INFORMACIÓN -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="alert alert-info alert-dismissible fade show" role="alert">
+                        <strong>ℹ️ Información:</strong> Todos los módulos implementan el patrón MVC con modelos, DAOs, controladores y vistas. La comunicación es mediante fetch API a https://paginas-web-cr.com/Api/apis/
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="bg-dark text-white text-center py-4 mt-5">
+            <p class="mb-0">&copy; 2026 Sistema Integrado - Multimedios</p>
+        </footer>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    </body>
+</html>
