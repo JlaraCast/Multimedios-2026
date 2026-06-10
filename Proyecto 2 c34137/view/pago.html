@@ -37,6 +37,22 @@
             </button>
         </div>
 
+        <div class="row g-2 mb-3">
+            <div class="col-sm-4">
+                <select class="form-select" id="filtroReservacion">
+                    <option value="">Todas las reservaciones</option>
+                </select>
+            </div>
+            <div class="col-sm-3">
+                <select class="form-select" id="filtroId">
+                    <option value="">Todos</option>
+                </select>
+            </div>
+            <div class="col-auto">
+                <button class="btn btn-outline-secondary" id="btnLimpiarFiltros">Limpiar</button>
+            </div>
+        </div>
+
         <div class="card shadow-sm">
             <div class="card-body p-0">
                 <div class="table-responsive">
@@ -110,7 +126,7 @@
                         </div>
                         <div class="mb-3">
                             <label for="fecha_pago" class="form-label">Fecha del Pago *</label>
-                            <input type="date" class="form-control" id="fecha_pago" name="fecha_pago">
+                            <input type="datetime-local" class="form-control" id="fecha_pago" name="fecha_pago">
                         </div>
                         <div class="mb-3">
                             <label for="usuario" class="form-label">Usuario *</label>

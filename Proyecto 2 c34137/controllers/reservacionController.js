@@ -11,6 +11,7 @@ let modoEdicion = false;
 let modalFormulario;
 const cache = new Map();
 const reservacionDAO = new ReservacionDAO();
+let allData = [];
 
 // ============ TABLA ============
 const ESTADO_RES = { pendiente: 'warning', confirmada: 'success', cancelada: 'danger', finalizada: 'secondary' };
@@ -38,10 +39,36 @@ async function consultarAPI() {
         const datos = await helpers.obtenerTodos(ENDPOINT);
         cache.clear();
         datos.forEach(r => cache.set(String(r.id), r));
-        helpers.dibujarTabla('cuerpoTabla', datos, renderFila);
+        allData = datos;
+        aplicarFiltros();
+        poblarFiltroId();
     } catch {
         helpers.mostrarAlerta('Error al consultar reservaciones', 'danger', 'alertaPagina');
     }
+}
+
+function aplicarFiltros() {
+    const cliente = document.getElementById('filtroCliente')?.value || '';
+    const estado = document.getElementById('filtroEstado')?.value || '';
+    const id = document.getElementById('filtroId')?.value || '';
+    let filtrados = allData;
+    if (cliente) filtrados = filtrados.filter(r => String(r.id_cliente) === cliente);
+    if (estado) filtrados = filtrados.filter(r => r.estado === estado);
+    if (id) filtrados = filtrados.filter(r => String(r.id) === id);
+    helpers.dibujarTabla('cuerpoTabla', filtrados, renderFila);
+}
+
+function poblarFiltroId() {
+    const select = document.getElementById('filtroId');
+    const val = select.value;
+    select.innerHTML = '<option value="">Todas</option>';
+    allData.forEach(r => {
+        const opt = document.createElement('option');
+        opt.value = r.id;
+        opt.textContent = `${r.id} - Cliente ${r.id_cliente} (${r.fecha_entrada || ''})`;
+        select.appendChild(opt);
+    });
+    select.value = val;
 }
 
 // ============ VALIDACIÓN ============
@@ -96,7 +123,8 @@ async function insertarReservacion() {
     const datos = obtenerDatos();
     try {
         const res = new Reservacion(datos.id, datos.id_cliente, datos.id_habitacion, datos.fecha_entrada, datos.fecha_salida, datos.cantidad_personas, datos.estado, datos.total, datos.usuario);
-        await helpers.crearRegistro(ENDPOINT, datos);
+        const { id, ...payload } = datos;
+        await helpers.crearRegistro(ENDPOINT, payload);
         reservacionDAO.insertar(res);
         limpiarFormulario();
         modalFormulario.hide();
@@ -134,7 +162,8 @@ async function eliminarReservacion(id) {
     }
 }
 
-function editarEnFormulario(item) {
+async function editarEnFormulario(item) {
+    await comboPromise;
     cambiarModoFormulario(true);
     document.getElementById('reservacionId').value = item.id;
     helpers.llenarFormulario({ id_cliente: item.id_cliente, id_habitacion: item.id_habitacion, fecha_entrada: item.fecha_entrada, fecha_salida: item.fecha_salida, cantidad_personas: item.cantidad_personas, estado: item.estado, total: item.total, usuario: item.usuario });
@@ -142,15 +171,19 @@ function editarEnFormulario(item) {
 }
 
 // ============ COMBOS ============
+let comboPromise;
+
 async function cargarClientes() {
     try {
         const clientes = await helpers.obtenerTodos('cliente/cliente.php');
         const select = document.getElementById('id_cliente');
+        const filtro = document.getElementById('filtroCliente');
         clientes.forEach(c => {
             const opt = document.createElement('option');
             opt.value = c.id;
             opt.textContent = `${c.id} - ${c.nombre} ${c.apellidos}`;
             select.appendChild(opt);
+            filtro.appendChild(opt.cloneNode(true));
         });
     } catch { /* sin clientes disponibles */ }
 }
@@ -171,8 +204,7 @@ async function cargarHabitaciones() {
 // ============ INICIALIZACIÓN ============
 document.addEventListener('DOMContentLoaded', () => {
     modalFormulario = new bootstrap.Modal(document.getElementById('modalFormulario'));
-    cargarClientes();
-    cargarHabitaciones();
+    comboPromise = Promise.all([cargarClientes(), cargarHabitaciones()]);
 
     document.getElementById('formulario').addEventListener('submit', (e) => {
         e.preventDefault();
@@ -186,6 +218,16 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     document.getElementById('btnCancelarModal').addEventListener('click', cancelarEdicion);
+
+    document.getElementById('filtroCliente').addEventListener('change', aplicarFiltros);
+    document.getElementById('filtroEstado').addEventListener('change', aplicarFiltros);
+    document.getElementById('filtroId').addEventListener('change', aplicarFiltros);
+    document.getElementById('btnLimpiarFiltros').addEventListener('click', () => {
+        document.getElementById('filtroCliente').value = '';
+        document.getElementById('filtroEstado').value = '';
+        document.getElementById('filtroId').value = '';
+        aplicarFiltros();
+    });
 
     document.getElementById('cuerpoTabla').addEventListener('click', (e) => {
         const btn = e.target.closest('button');

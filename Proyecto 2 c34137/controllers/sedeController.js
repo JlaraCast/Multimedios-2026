@@ -11,6 +11,7 @@ let modoEdicion = false;
 let modalFormulario;
 const cache = new Map();
 const sedeDAO = new SedeDAO();
+let allData = [];
 
 // ============ TABLA ============
 function renderFila(sede, num) {
@@ -36,10 +37,34 @@ async function consultarAPI() {
         const datos = await helpers.obtenerTodos(ENDPOINT);
         cache.clear();
         datos.forEach(s => cache.set(String(s.id), s));
-        helpers.dibujarTabla('cuerpoTabla', datos, renderFila);
+        allData = datos;
+        aplicarFiltros();
+        poblarFiltroId();
     } catch {
         helpers.mostrarAlerta('Error al consultar sedes', 'danger', 'alertaPagina');
     }
+}
+
+function aplicarFiltros() {
+    const nombre = document.getElementById('filtroNombre')?.value.toLowerCase() || '';
+    const id = document.getElementById('filtroId')?.value || '';
+    let filtrados = allData;
+    if (nombre) filtrados = filtrados.filter(s => (s.nombre || '').toLowerCase().includes(nombre));
+    if (id) filtrados = filtrados.filter(s => String(s.id) === id);
+    helpers.dibujarTabla('cuerpoTabla', filtrados, renderFila);
+}
+
+function poblarFiltroId() {
+    const select = document.getElementById('filtroId');
+    const val = select.value;
+    select.innerHTML = '<option value="">Todas</option>';
+    allData.forEach(s => {
+        const opt = document.createElement('option');
+        opt.value = s.id;
+        opt.textContent = `${s.id} - ${s.nombre}`;
+        select.appendChild(opt);
+    });
+    select.value = val;
 }
 
 // ============ VALIDACIÓN ============
@@ -91,7 +116,8 @@ async function insertarSede() {
     const datos = obtenerDatos();
     try {
         const sede = new Sede(datos.id, datos.id_hotel, datos.nombre, datos.pais, datos.provincia, datos.ciudad, datos.direccion, datos.telefono, datos.correo, datos.cantidad_habitaciones, datos.usuario);
-        await helpers.crearRegistro(ENDPOINT, datos);
+        const { id, ...payload } = datos;
+        await helpers.crearRegistro(ENDPOINT, payload);
         sedeDAO.insertar(sede);
         limpiarFormulario();
         modalFormulario.hide();
@@ -129,7 +155,8 @@ async function eliminarSede(id) {
     }
 }
 
-function editarEnFormulario(item) {
+async function editarEnFormulario(item) {
+    await comboPromise;
     cambiarModoFormulario(true);
     document.getElementById('sedeId').value = item.id;
     helpers.llenarFormulario({ id_hotel: item.id_hotel, nombre: item.nombre, pais: item.pais, provincia: item.provincia, ciudad: item.ciudad, direccion: item.direccion, telefono: item.telefono, correo: item.correo, cantidad_habitaciones: item.cantidad_habitaciones, usuario: item.usuario });
@@ -137,6 +164,8 @@ function editarEnFormulario(item) {
 }
 
 // ============ COMBOS ============
+let comboPromise;
+
 async function cargarHoteles() {
     try {
         const hoteles = await helpers.obtenerTodos('hotel/hotel.php');
@@ -153,7 +182,7 @@ async function cargarHoteles() {
 // ============ INICIALIZACIÓN ============
 document.addEventListener('DOMContentLoaded', () => {
     modalFormulario = new bootstrap.Modal(document.getElementById('modalFormulario'));
-    cargarHoteles();
+    comboPromise = cargarHoteles();
 
     document.getElementById('formulario').addEventListener('submit', (e) => {
         e.preventDefault();
@@ -167,6 +196,14 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     document.getElementById('btnCancelarModal').addEventListener('click', cancelarEdicion);
+
+    document.getElementById('filtroNombre').addEventListener('input', aplicarFiltros);
+    document.getElementById('filtroId').addEventListener('change', aplicarFiltros);
+    document.getElementById('btnLimpiarFiltros').addEventListener('click', () => {
+        document.getElementById('filtroNombre').value = '';
+        document.getElementById('filtroId').value = '';
+        aplicarFiltros();
+    });
 
     document.getElementById('cuerpoTabla').addEventListener('click', (e) => {
         const btn = e.target.closest('button');

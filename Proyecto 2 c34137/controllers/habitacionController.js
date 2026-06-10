@@ -11,6 +11,7 @@ let modoEdicion = false;
 let modalFormulario;
 const cache = new Map();
 const habitacionDAO = new HabitacionDAO();
+let allData = [];
 
 // ============ TABLA ============
 const ESTADO_HAB = { disponible: 'success', ocupada: 'danger', mantenimiento: 'warning' };
@@ -38,10 +39,34 @@ async function consultarAPI() {
         const datos = await helpers.obtenerTodos(ENDPOINT);
         cache.clear();
         datos.forEach(h => cache.set(String(h.id), h));
-        helpers.dibujarTabla('cuerpoTabla', datos, renderFila);
+        allData = datos;
+        aplicarFiltros();
+        poblarFiltroId();
     } catch {
         helpers.mostrarAlerta('Error al consultar habitaciones', 'danger', 'alertaPagina');
     }
+}
+
+function aplicarFiltros() {
+    const sede = document.getElementById('filtroSede')?.value || '';
+    const id = document.getElementById('filtroId')?.value || '';
+    let filtrados = allData;
+    if (sede) filtrados = filtrados.filter(h => String(h.id_sede) === sede);
+    if (id) filtrados = filtrados.filter(h => String(h.id) === id);
+    helpers.dibujarTabla('cuerpoTabla', filtrados, renderFila);
+}
+
+function poblarFiltroId() {
+    const select = document.getElementById('filtroId');
+    const val = select.value;
+    select.innerHTML = '<option value="">Todas</option>';
+    allData.forEach(h => {
+        const opt = document.createElement('option');
+        opt.value = h.id;
+        opt.textContent = `${h.id} - Hab. ${h.numero} (${h.tipo || ''})`;
+        select.appendChild(opt);
+    });
+    select.value = val;
 }
 
 // ============ VALIDACIÓN ============
@@ -92,7 +117,8 @@ async function insertarHabitacion() {
     const datos = obtenerDatos();
     try {
         const hab = new Habitacion(datos.id, datos.id_sede, datos.numero, datos.tipo, datos.descripcion, datos.precio, datos.capacidad, datos.estado, datos.usuario);
-        await helpers.crearRegistro(ENDPOINT, datos);
+        const { id, ...payload } = datos;
+        await helpers.crearRegistro(ENDPOINT, payload);
         habitacionDAO.insertar(hab);
         limpiarFormulario();
         modalFormulario.hide();
@@ -130,7 +156,8 @@ async function eliminarHabitacion(id) {
     }
 }
 
-function editarEnFormulario(item) {
+async function editarEnFormulario(item) {
+    await comboPromise;
     cambiarModoFormulario(true);
     document.getElementById('habitacionId').value = item.id;
     helpers.llenarFormulario({ id_sede: item.id_sede, numero: item.numero, tipo: item.tipo, descripcion: item.descripcion, precio: item.precio, capacidad: item.capacidad, estado: item.estado, usuario: item.usuario });
@@ -138,15 +165,19 @@ function editarEnFormulario(item) {
 }
 
 // ============ COMBOS ============
+let comboPromise;
+
 async function cargarSedes() {
     try {
         const sedes = await helpers.obtenerTodos('sede/sede.php');
         const select = document.getElementById('id_sede');
+        const filtro = document.getElementById('filtroSede');
         sedes.forEach(s => {
             const opt = document.createElement('option');
             opt.value = s.id;
             opt.textContent = `${s.id} - ${s.nombre}`;
             select.appendChild(opt);
+            filtro.appendChild(opt.cloneNode(true));
         });
     } catch { /* sin sedes disponibles */ }
 }
@@ -154,7 +185,7 @@ async function cargarSedes() {
 // ============ INICIALIZACIÓN ============
 document.addEventListener('DOMContentLoaded', () => {
     modalFormulario = new bootstrap.Modal(document.getElementById('modalFormulario'));
-    cargarSedes();
+    comboPromise = cargarSedes();
 
     document.getElementById('formulario').addEventListener('submit', (e) => {
         e.preventDefault();
@@ -168,6 +199,14 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     document.getElementById('btnCancelarModal').addEventListener('click', cancelarEdicion);
+
+    document.getElementById('filtroSede').addEventListener('change', aplicarFiltros);
+    document.getElementById('filtroId').addEventListener('change', aplicarFiltros);
+    document.getElementById('btnLimpiarFiltros').addEventListener('click', () => {
+        document.getElementById('filtroSede').value = '';
+        document.getElementById('filtroId').value = '';
+        aplicarFiltros();
+    });
 
     document.getElementById('cuerpoTabla').addEventListener('click', (e) => {
         const btn = e.target.closest('button');

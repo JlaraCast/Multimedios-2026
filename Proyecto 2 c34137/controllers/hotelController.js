@@ -11,9 +11,13 @@ let modoEdicion = false;
 let modalFormulario;
 const cache = new Map();
 const hotelDAO = new HotelDAO();
+let allData = [];
 
 // ============ TABLA ============
 function renderFila(hotel, num) {
+    const estadoBadge = hotel.estado === 'Inactivo'
+        ? `<span class="badge bg-secondary">Inactivo</span>`
+        : `<span class="badge bg-success">Activo</span>`;
     return `
         <td>${num}</td>
         <td>${hotel.nombre || ''}</td>
@@ -21,6 +25,7 @@ function renderFila(hotel, num) {
         <td>${hotel.telefono || ''}</td>
         <td>${hotel.correo || ''}</td>
         <td>${hotel.sitio_web || ''}</td>
+        <td>${estadoBadge}</td>
         <td>
             <button class="btn btn-sm btn-warning me-1 btnEditar" data-id="${hotel.id}">Editar</button>
             <button class="btn btn-sm btn-danger btnEliminar" data-id="${hotel.id}">Eliminar</button>
@@ -32,10 +37,34 @@ async function consultarAPI() {
         const datos = await helpers.obtenerTodos(ENDPOINT);
         cache.clear();
         datos.forEach(h => cache.set(String(h.id), h));
-        helpers.dibujarTabla('cuerpoTabla', datos, renderFila);
+        allData = datos;
+        aplicarFiltros();
+        poblarFiltroId();
     } catch {
         helpers.mostrarAlerta('Error al consultar hoteles', 'danger', 'alertaPagina');
     }
+}
+
+function aplicarFiltros() {
+    const nombre = document.getElementById('filtroNombre')?.value.toLowerCase() || '';
+    const id = document.getElementById('filtroId')?.value || '';
+    let filtrados = allData;
+    if (nombre) filtrados = filtrados.filter(h => (h.nombre || '').toLowerCase().includes(nombre));
+    if (id) filtrados = filtrados.filter(h => String(h.id) === id);
+    helpers.dibujarTabla('cuerpoTabla', filtrados, renderFila);
+}
+
+function poblarFiltroId() {
+    const select = document.getElementById('filtroId');
+    const val = select.value;
+    select.innerHTML = '<option value="">Todos</option>';
+    allData.forEach(h => {
+        const opt = document.createElement('option');
+        opt.value = h.id;
+        opt.textContent = `${h.id} - ${h.nombre}`;
+        select.appendChild(opt);
+    });
+    select.value = val;
 }
 
 // ============ VALIDACIÓN ============
@@ -84,7 +113,8 @@ async function insertarHotel() {
     const datos = obtenerDatos();
     try {
         const hotel = new Hotel(datos.id, datos.nombre, datos.descripcion, datos.telefono, datos.correo, datos.sitio_web, datos.usuario);
-        await helpers.crearRegistro(ENDPOINT, datos);
+        const { id, ...payload } = datos;
+        await helpers.crearRegistro(ENDPOINT, payload);
         hotelDAO.insertar(hotel);
         limpiarFormulario();
         modalFormulario.hide();
@@ -145,6 +175,14 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     document.getElementById('btnCancelarModal').addEventListener('click', cancelarEdicion);
+
+    document.getElementById('filtroNombre').addEventListener('input', aplicarFiltros);
+    document.getElementById('filtroId').addEventListener('change', aplicarFiltros);
+    document.getElementById('btnLimpiarFiltros').addEventListener('click', () => {
+        document.getElementById('filtroNombre').value = '';
+        document.getElementById('filtroId').value = '';
+        aplicarFiltros();
+    });
 
     document.getElementById('cuerpoTabla').addEventListener('click', (e) => {
         const btn = e.target.closest('button');

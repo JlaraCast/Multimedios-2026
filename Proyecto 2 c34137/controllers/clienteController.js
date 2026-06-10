@@ -11,6 +11,7 @@ let modoEdicion = false;
 let modalFormulario;
 const cache = new Map();
 const clienteDAO = new ClienteDAO();
+let allData = [];
 
 // ============ TABLA ============
 function renderFila(cliente, num) {
@@ -37,10 +38,34 @@ async function consultarAPI() {
         const datos = await helpers.obtenerTodos(ENDPOINT);
         cache.clear();
         datos.forEach(c => cache.set(String(c.id), c));
-        helpers.dibujarTabla('cuerpoTabla', datos, renderFila);
+        allData = datos;
+        aplicarFiltros();
+        poblarFiltroId();
     } catch {
         helpers.mostrarAlerta('Error al consultar clientes', 'danger', 'alertaPagina');
     }
+}
+
+function aplicarFiltros() {
+    const nombre = document.getElementById('filtroNombre')?.value.toLowerCase() || '';
+    const id = document.getElementById('filtroId')?.value || '';
+    let filtrados = allData;
+    if (nombre) filtrados = filtrados.filter(c => (c.nombre || '').toLowerCase().includes(nombre) || (c.apellidos || '').toLowerCase().includes(nombre));
+    if (id) filtrados = filtrados.filter(c => String(c.id) === id);
+    helpers.dibujarTabla('cuerpoTabla', filtrados, renderFila);
+}
+
+function poblarFiltroId() {
+    const select = document.getElementById('filtroId');
+    const val = select.value;
+    select.innerHTML = '<option value="">Todos</option>';
+    allData.forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c.id;
+        opt.textContent = `${c.id} - ${c.nombre} ${c.apellidos || ''}`;
+        select.appendChild(opt);
+    });
+    select.value = val;
 }
 
 // ============ VALIDACIÓN ============
@@ -89,7 +114,8 @@ async function insertarCliente() {
     const datos = obtenerDatos();
     try {
         const cliente = new Cliente(datos.id, datos.nombre, datos.apellidos, datos.correo, datos.telefono, datos.identificacion, datos.usuario);
-        await helpers.crearRegistro(ENDPOINT, datos);
+        const { id, ...payload } = datos;
+        await helpers.crearRegistro(ENDPOINT, payload);
         clienteDAO.insertar(cliente);
         limpiarFormulario();
         modalFormulario.hide();
@@ -150,6 +176,14 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     document.getElementById('btnCancelarModal').addEventListener('click', cancelarEdicion);
+
+    document.getElementById('filtroNombre').addEventListener('input', aplicarFiltros);
+    document.getElementById('filtroId').addEventListener('change', aplicarFiltros);
+    document.getElementById('btnLimpiarFiltros').addEventListener('click', () => {
+        document.getElementById('filtroNombre').value = '';
+        document.getElementById('filtroId').value = '';
+        aplicarFiltros();
+    });
 
     document.getElementById('cuerpoTabla').addEventListener('click', (e) => {
         const btn = e.target.closest('button');

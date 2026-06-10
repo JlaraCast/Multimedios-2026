@@ -11,6 +11,7 @@ let modoEdicion = false;
 let modalFormulario;
 const cache = new Map();
 const pagoDAO = new PagoDAO();
+let allData = [];
 
 // ============ TABLA ============
 const ESTADO_PAGO = { pendiente: 'warning', pagado: 'success', rechazado: 'danger' };
@@ -37,10 +38,34 @@ async function consultarAPI() {
         const datos = await helpers.obtenerTodos(ENDPOINT);
         cache.clear();
         datos.forEach(p => cache.set(String(p.id), p));
-        helpers.dibujarTabla('cuerpoTabla', datos, renderFila);
+        allData = datos;
+        aplicarFiltros();
+        poblarFiltroId();
     } catch {
         helpers.mostrarAlerta('Error al consultar pagos', 'danger', 'alertaPagina');
     }
+}
+
+function aplicarFiltros() {
+    const reservacion = document.getElementById('filtroReservacion')?.value || '';
+    const id = document.getElementById('filtroId')?.value || '';
+    let filtrados = allData;
+    if (reservacion) filtrados = filtrados.filter(p => String(p.id_reservacion) === reservacion);
+    if (id) filtrados = filtrados.filter(p => String(p.id) === id);
+    helpers.dibujarTabla('cuerpoTabla', filtrados, renderFila);
+}
+
+function poblarFiltroId() {
+    const select = document.getElementById('filtroId');
+    const val = select.value;
+    select.innerHTML = '<option value="">Todos</option>';
+    allData.forEach(p => {
+        const opt = document.createElement('option');
+        opt.value = p.id;
+        opt.textContent = `${p.id} - $${parseFloat(p.monto || 0).toFixed(2)} (Res. ${p.id_reservacion})`;
+        select.appendChild(opt);
+    });
+    select.value = val;
 }
 
 // ============ VALIDACIÓN ============
@@ -60,6 +85,9 @@ function obtenerDatos() {
     const datos = helpers.obtenerValores(CAMPOS);
     datos.id = document.getElementById('pagoId').value || Date.now();
     datos.monto = parseFloat(datos.monto);
+    if (datos.fecha_pago) {
+        datos.fecha_pago = datos.fecha_pago.replace('T', ' ') + ':00';
+    }
     return datos;
 }
 
@@ -90,7 +118,8 @@ async function insertarPago() {
     const datos = obtenerDatos();
     try {
         const pago = new Pago(datos.id, datos.id_reservacion, datos.monto, datos.metodo, datos.detalle, datos.estado, datos.fecha_pago, datos.usuario);
-        await helpers.crearRegistro(ENDPOINT, datos);
+        const { id, ...payload } = datos;
+        await helpers.crearRegistro(ENDPOINT, payload);
         pagoDAO.insertar(pago);
         limpiarFormulario();
         modalFormulario.hide();
@@ -128,23 +157,29 @@ async function eliminarPago(id) {
     }
 }
 
-function editarEnFormulario(item) {
+async function editarEnFormulario(item) {
+    await comboPromise;
     cambiarModoFormulario(true);
     document.getElementById('pagoId').value = item.id;
-    helpers.llenarFormulario({ id_reservacion: item.id_reservacion, monto: item.monto, metodo: item.metodo, detalle: item.detalle, estado: item.estado, fecha_pago: item.fecha_pago, usuario: item.usuario });
+    const fechaLocal = item.fecha_pago ? item.fecha_pago.replace(' ', 'T').substring(0, 16) : '';
+    helpers.llenarFormulario({ id_reservacion: item.id_reservacion, monto: item.monto, metodo: item.metodo, detalle: item.detalle, estado: item.estado, fecha_pago: fechaLocal, usuario: item.usuario });
     modalFormulario.show();
 }
 
 // ============ COMBOS ============
+let comboPromise;
+
 async function cargarReservaciones() {
     try {
         const reservaciones = await helpers.obtenerTodos('reservacion/reservacion.php');
         const select = document.getElementById('id_reservacion');
+        const filtro = document.getElementById('filtroReservacion');
         reservaciones.forEach(r => {
             const opt = document.createElement('option');
             opt.value = r.id;
             opt.textContent = `${r.id} - Cliente ${r.id_cliente} (${r.fecha_entrada} → ${r.fecha_salida})`;
             select.appendChild(opt);
+            filtro.appendChild(opt.cloneNode(true));
         });
     } catch { /* sin reservaciones disponibles */ }
 }
@@ -152,7 +187,7 @@ async function cargarReservaciones() {
 // ============ INICIALIZACIÓN ============
 document.addEventListener('DOMContentLoaded', () => {
     modalFormulario = new bootstrap.Modal(document.getElementById('modalFormulario'));
-    cargarReservaciones();
+    comboPromise = cargarReservaciones();
 
     document.getElementById('formulario').addEventListener('submit', (e) => {
         e.preventDefault();
@@ -166,6 +201,14 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     document.getElementById('btnCancelarModal').addEventListener('click', cancelarEdicion);
+
+    document.getElementById('filtroReservacion').addEventListener('change', aplicarFiltros);
+    document.getElementById('filtroId').addEventListener('change', aplicarFiltros);
+    document.getElementById('btnLimpiarFiltros').addEventListener('click', () => {
+        document.getElementById('filtroReservacion').value = '';
+        document.getElementById('filtroId').value = '';
+        aplicarFiltros();
+    });
 
     document.getElementById('cuerpoTabla').addEventListener('click', (e) => {
         const btn = e.target.closest('button');
