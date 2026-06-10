@@ -200,8 +200,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('btnCancelarModal').addEventListener('click', cancelarEdicion);
 
-    document.getElementById('filtroSede').addEventListener('change', aplicarFiltros);
-    document.getElementById('filtroId').addEventListener('change', aplicarFiltros);
+    document.getElementById('filtroSede')?.addEventListener('change', aplicarFiltros);
+    document.getElementById('filtroId')?.addEventListener('change', aplicarFiltros);
     document.getElementById('btnLimpiarFiltros').addEventListener('click', () => {
         document.getElementById('filtroSede').value = '';
         document.getElementById('filtroId').value = '';

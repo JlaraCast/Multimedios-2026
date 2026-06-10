@@ -202,8 +202,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('btnCancelarModal').addEventListener('click', cancelarEdicion);
 
-    document.getElementById('filtroReservacion').addEventListener('change', aplicarFiltros);
-    document.getElementById('filtroId').addEventListener('change', aplicarFiltros);
+    document.getElementById('filtroReservacion')?.addEventListener('change', aplicarFiltros);
+    document.getElementById('filtroId')?.addEventListener('change', aplicarFiltros);
     document.getElementById('btnLimpiarFiltros').addEventListener('click', () => {
         document.getElementById('filtroReservacion').value = '';
         document.getElementById('filtroId').value = '';

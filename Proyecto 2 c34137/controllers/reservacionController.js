@@ -219,9 +219,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('btnCancelarModal').addEventListener('click', cancelarEdicion);
 
-    document.getElementById('filtroCliente').addEventListener('change', aplicarFiltros);
-    document.getElementById('filtroEstado').addEventListener('change', aplicarFiltros);
-    document.getElementById('filtroId').addEventListener('change', aplicarFiltros);
+    document.getElementById('filtroCliente')?.addEventListener('change', aplicarFiltros);
+    document.getElementById('filtroEstado')?.addEventListener('change', aplicarFiltros);
+    document.getElementById('filtroId')?.addEventListener('change', aplicarFiltros);
     document.getElementById('btnLimpiarFiltros').addEventListener('click', () => {
         document.getElementById('filtroCliente').value = '';
         document.getElementById('filtroEstado').value = '';
