@@ -45,15 +45,19 @@
                             <tr>
                                 <th>#</th>
                                 <th>Nombre</th>
+                                <th>País</th>
                                 <th>Provincia</th>
                                 <th>Ciudad</th>
+                                <th>Dirección</th>
                                 <th>Teléfono</th>
+                                <th>Correo</th>
+                                <th>Hab.</th>
                                 <th>ID Hotel</th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
                         <tbody id="cuerpoTabla">
-                            <tr><td colspan="7" class="text-center py-3">Cargando...</td></tr>
+                            <tr><td colspan="11" class="text-center py-3">Cargando...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -75,8 +79,10 @@
 
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="id_hotel" class="form-label">ID del Hotel *</label>
-                                <input type="text" class="form-control" id="id_hotel" name="id_hotel" placeholder="Ej: 1">
+                                <label for="id_hotel" class="form-label">Hotel *</label>
+                                <select class="form-select" id="id_hotel" name="id_hotel">
+                                    <option value="">-- Seleccione --</option>
+                                </select>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="nombre" class="form-label">Nombre de la Sede *</label>

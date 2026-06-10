@@ -1,0 +1,48 @@
+/* Ancho fijo de la calculadora */
+.calculator {
+  width: 320px;
+  min-width: 280px;
+}
+
+/* Pantalla */
+.display {
+  border-bottom: 1px solid rgb(255, 255, 255);
+}
+
+.expression-text {
+  min-height: 1.25rem;
+  font-size: 0.85rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#screen {
+  font-size: 2rem !important;
+  caret-color: transparent;
+  letter-spacing: 1px;
+}
+
+/* Botones uniformes */
+.calc-btn {
+  height: 60px;
+  border-radius: 10px !important;
+  font-size: 1.2rem !important;
+  transition: transform 0.08s ease, opacity 0.08s ease;
+}
+
+.calc-btn:active {
+  transform: scale(0.93);
+  opacity: 0.85;
+}
+
+/* Responsive: más pequeño en pantallas muy estrechas */
+@media (max-width: 360px) {
+  .calculator {
+    width: 100%;
+  }
+  .calc-btn {
+    height: 50px;
+    font-size: 1rem !important;
+  }
+}

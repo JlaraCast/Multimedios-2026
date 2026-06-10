@@ -17,9 +17,13 @@ function renderFila(sede, num) {
     return `
         <td>${num}</td>
         <td>${sede.nombre || ''}</td>
+        <td>${sede.pais || ''}</td>
         <td>${sede.provincia || ''}</td>
         <td>${sede.ciudad || ''}</td>
+        <td>${sede.direccion || ''}</td>
         <td>${sede.telefono || ''}</td>
+        <td>${sede.correo || ''}</td>
+        <td>${sede.cantidad_habitaciones ?? ''}</td>
         <td>${sede.id_hotel || ''}</td>
         <td>
             <button class="btn btn-sm btn-warning me-1 btnEditar" data-id="${sede.id}">Editar</button>
@@ -132,9 +136,24 @@ function editarEnFormulario(item) {
     modalFormulario.show();
 }
 
+// ============ COMBOS ============
+async function cargarHoteles() {
+    try {
+        const hoteles = await helpers.obtenerTodos('hotel/hotel.php');
+        const select = document.getElementById('id_hotel');
+        hoteles.forEach(h => {
+            const opt = document.createElement('option');
+            opt.value = h.id;
+            opt.textContent = `${h.id} - ${h.nombre}`;
+            select.appendChild(opt);
+        });
+    } catch { /* sin hoteles disponibles */ }
+}
+
 // ============ INICIALIZACIÓN ============
 document.addEventListener('DOMContentLoaded', () => {
     modalFormulario = new bootstrap.Modal(document.getElementById('modalFormulario'));
+    cargarHoteles();
 
     document.getElementById('formulario').addEventListener('submit', (e) => {
         e.preventDefault();

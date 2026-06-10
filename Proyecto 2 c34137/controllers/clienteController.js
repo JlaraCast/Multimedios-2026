@@ -14,6 +14,10 @@ const clienteDAO = new ClienteDAO();
 
 // ============ TABLA ============
 function renderFila(cliente, num) {
+    const activo = Number(cliente.activo) === 1;
+    const estadoBadge = activo
+        ? `<span class="badge bg-success">Activo</span>`
+        : `<span class="badge bg-secondary">Inactivo</span>`;
     return `
         <td>${num}</td>
         <td>${cliente.nombre || ''}</td>
@@ -21,6 +25,7 @@ function renderFila(cliente, num) {
         <td>${cliente.identificacion || ''}</td>
         <td>${cliente.correo || ''}</td>
         <td>${cliente.telefono || ''}</td>
+        <td>${estadoBadge}</td>
         <td>
             <button class="btn btn-sm btn-warning me-1 btnEditar" data-id="${cliente.id}">Editar</button>
             <button class="btn btn-sm btn-danger btnEliminar" data-id="${cliente.id}">Eliminar</button>

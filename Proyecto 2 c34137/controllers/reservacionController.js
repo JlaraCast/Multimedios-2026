@@ -13,14 +13,20 @@ const cache = new Map();
 const reservacionDAO = new ReservacionDAO();
 
 // ============ TABLA ============
+const ESTADO_RES = { pendiente: 'warning', confirmada: 'success', cancelada: 'danger', finalizada: 'secondary' };
+
 function renderFila(res, num) {
+    const estadoKey = (res.estado || '').toLowerCase();
+    const estadoBadge = `<span class="badge bg-${ESTADO_RES[estadoKey] || 'secondary'}">${res.estado || ''}</span>`;
     return `
         <td>${num}</td>
         <td>${res.fecha_entrada || ''}</td>
         <td>${res.fecha_salida || ''}</td>
         <td>${res.id_cliente || ''}</td>
         <td>${res.id_habitacion || ''}</td>
-        <td>${res.estado || ''}</td>
+        <td>${res.cantidad_personas || ''}</td>
+        <td>$${parseFloat(res.total || 0).toFixed(2)}</td>
+        <td>${estadoBadge}</td>
         <td>
             <button class="btn btn-sm btn-warning me-1 btnEditar" data-id="${res.id}">Editar</button>
             <button class="btn btn-sm btn-danger btnEliminar" data-id="${res.id}">Eliminar</button>
@@ -135,9 +141,38 @@ function editarEnFormulario(item) {
     modalFormulario.show();
 }
 
+// ============ COMBOS ============
+async function cargarClientes() {
+    try {
+        const clientes = await helpers.obtenerTodos('cliente/cliente.php');
+        const select = document.getElementById('id_cliente');
+        clientes.forEach(c => {
+            const opt = document.createElement('option');
+            opt.value = c.id;
+            opt.textContent = `${c.id} - ${c.nombre} ${c.apellidos}`;
+            select.appendChild(opt);
+        });
+    } catch { /* sin clientes disponibles */ }
+}
+
+async function cargarHabitaciones() {
+    try {
+        const habitaciones = await helpers.obtenerTodos('habitacion/habitacion.php');
+        const select = document.getElementById('id_habitacion');
+        habitaciones.forEach(h => {
+            const opt = document.createElement('option');
+            opt.value = h.id;
+            opt.textContent = `${h.id} - Hab. ${h.numero} (${h.tipo})`;
+            select.appendChild(opt);
+        });
+    } catch { /* sin habitaciones disponibles */ }
+}
+
 // ============ INICIALIZACIÓN ============
 document.addEventListener('DOMContentLoaded', () => {
     modalFormulario = new bootstrap.Modal(document.getElementById('modalFormulario'));
+    cargarClientes();
+    cargarHabitaciones();
 
     document.getElementById('formulario').addEventListener('submit', (e) => {
         e.preventDefault();

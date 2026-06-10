@@ -13,13 +13,19 @@ const cache = new Map();
 const habitacionDAO = new HabitacionDAO();
 
 // ============ TABLA ============
+const ESTADO_HAB = { disponible: 'success', ocupada: 'danger', mantenimiento: 'warning' };
+
 function renderFila(hab, num) {
+    const estadoKey = (hab.estado || '').toLowerCase();
+    const estadoBadge = `<span class="badge bg-${ESTADO_HAB[estadoKey] || 'secondary'}">${hab.estado || ''}</span>`;
     return `
         <td>${num}</td>
         <td>${hab.numero || ''}</td>
         <td>${hab.tipo || ''}</td>
+        <td>${hab.descripcion || ''}</td>
         <td>$${parseFloat(hab.precio || 0).toFixed(2)}</td>
-        <td>${hab.estado || ''}</td>
+        <td>${hab.capacidad || ''}</td>
+        <td>${estadoBadge}</td>
         <td>${hab.id_sede || ''}</td>
         <td>
             <button class="btn btn-sm btn-warning me-1 btnEditar" data-id="${hab.id}">Editar</button>
@@ -131,9 +137,24 @@ function editarEnFormulario(item) {
     modalFormulario.show();
 }
 
+// ============ COMBOS ============
+async function cargarSedes() {
+    try {
+        const sedes = await helpers.obtenerTodos('sede/sede.php');
+        const select = document.getElementById('id_sede');
+        sedes.forEach(s => {
+            const opt = document.createElement('option');
+            opt.value = s.id;
+            opt.textContent = `${s.id} - ${s.nombre}`;
+            select.appendChild(opt);
+        });
+    } catch { /* sin sedes disponibles */ }
+}
+
 // ============ INICIALIZACIÓN ============
 document.addEventListener('DOMContentLoaded', () => {
     modalFormulario = new bootstrap.Modal(document.getElementById('modalFormulario'));
+    cargarSedes();
 
     document.getElementById('formulario').addEventListener('submit', (e) => {
         e.preventDefault();

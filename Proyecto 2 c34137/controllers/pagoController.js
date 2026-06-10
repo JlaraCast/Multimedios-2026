@@ -13,13 +13,18 @@ const cache = new Map();
 const pagoDAO = new PagoDAO();
 
 // ============ TABLA ============
+const ESTADO_PAGO = { pendiente: 'warning', pagado: 'success', rechazado: 'danger' };
+
 function renderFila(pago, num) {
+    const estadoKey = (pago.estado || '').toLowerCase();
+    const estadoBadge = `<span class="badge bg-${ESTADO_PAGO[estadoKey] || 'secondary'}">${pago.estado || ''}</span>`;
     return `
         <td>${num}</td>
         <td>$${parseFloat(pago.monto || 0).toFixed(2)}</td>
         <td>${pago.fecha_pago || ''}</td>
         <td>${pago.metodo || ''}</td>
-        <td>${pago.estado || ''}</td>
+        <td>${pago.detalle || ''}</td>
+        <td>${estadoBadge}</td>
         <td>${pago.id_reservacion || ''}</td>
         <td>
             <button class="btn btn-sm btn-warning me-1 btnEditar" data-id="${pago.id}">Editar</button>
@@ -130,9 +135,24 @@ function editarEnFormulario(item) {
     modalFormulario.show();
 }
 
+// ============ COMBOS ============
+async function cargarReservaciones() {
+    try {
+        const reservaciones = await helpers.obtenerTodos('reservacion/reservacion.php');
+        const select = document.getElementById('id_reservacion');
+        reservaciones.forEach(r => {
+            const opt = document.createElement('option');
+            opt.value = r.id;
+            opt.textContent = `${r.id} - Cliente ${r.id_cliente} (${r.fecha_entrada} → ${r.fecha_salida})`;
+            select.appendChild(opt);
+        });
+    } catch { /* sin reservaciones disponibles */ }
+}
+
 // ============ INICIALIZACIÓN ============
 document.addEventListener('DOMContentLoaded', () => {
     modalFormulario = new bootstrap.Modal(document.getElementById('modalFormulario'));
+    cargarReservaciones();
 
     document.getElementById('formulario').addEventListener('submit', (e) => {
         e.preventDefault();
